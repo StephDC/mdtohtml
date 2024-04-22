@@ -1,0 +1,6 @@
+Package: mdtohtml
+Version: 0.1.0
+Architecture: all
+Maintainer: Shunran Zhang <szhang@gen-info.osaka-u.ac.jp>
+Description: MarkDown to HTML converter using GitHub
+Depends: curl

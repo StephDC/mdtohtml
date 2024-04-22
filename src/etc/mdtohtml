@@ -1,0 +1,11 @@
+## Configuration for mdtohtml
+#
+## This file contains two parameters that need to be set.
+
+## First, please generate a GitHub token and fill in the line below:
+GITHUB_TOKEN=""
+
+## Then, if you want to use gfm, specify any repo below
+# GITHUB_REPO="StephDC/mdtohtml"
+## or leave this field empty to use markdown raw mode
+GITHUB_REPO=""

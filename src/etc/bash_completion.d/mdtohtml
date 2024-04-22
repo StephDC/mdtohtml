@@ -1,0 +1,13 @@
+# mdtohtml completion
+
+_mdtohtml() {
+        local cur="${COMP_WORDS[COMP_CWORD]}"
+        local IFS=$'\n'
+        if [[ $COMP_CWORD -eq 1 ]]
+        then COMPREPLY=( $(compgen -o plusdirs -fX '!*.md' -- "$cur") )
+        elif [[ $COMP_CWORD -eq 2 ]]
+        then COMPREPLY=( $(compgen -o plusdirs -fX '!*.html' -- "$cur") )
+        fi
+}
+
+complete -o filenames -F _mdtohtml mdtohtml

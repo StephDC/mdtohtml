@@ -1,0 +1,30 @@
+#! /bin/bash
+set -a
+if [ -f /etc/mdtohtml ]
+then source /etc/mdtohtml
+fi
+set +a
+set -e
+
+TOKEN=${TOKEN:"$GITHUB_TOKEN"}
+MODE=${MODE:"$GITHUB_REPO"}
+VERSION="0.1"
+OUTPARAM=()
+
+if [ -z "${TOKEN}" ]; then printf "[ERROR] This program requires a GitHub token to work.\nYou may pass it in by \$TOKEN or set it in /etc/mdtohtml.\n"; exit 1; fi
+if [ -z $1 ]; then printf "Usage: $0 input.md > output.html\n"; exit ; fi
+if [ "${MODE}" == "markdown" ]; then unset MODE; fi
+
+if [ -z "${MODE}" ]
+
+then if [ -z "$2" ]
+	then curl -H "User-Agent: Staph-MDConvert/${VERSION}" -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: text/x-markdown" -X POST --data-binary "@$1" https://api.github.com/markdown/raw
+	else curl -H "User-Agent: Staph-MDConvert/${VERSION}" -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: text/x-markdown" -X POST --data-binary "@$1" -o "$2" https://api.github.com/markdown/raw
+	fi
+
+else if [ -z "$2" ]
+	then jq -Rs "{ text: . , mode: \"gfm\" , context: \"${MODE}\" }" "$1" | curl -H "User-Agent: Staph-MDConvert/${VERSION}" -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/json" -X POST --data-binary @- https://api.github.com/markdown | sed -e 's/<br>//'
+	else jq -Rs "{ text: . , mode: \"gfm\", context: \"${MODE}\" }" "$1" | curl -H "User-Agent: Staph-MDConvert/${VERSION}" -H "Authorization: Bearer $TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/json" -X POST --data-binary @- https://api.github.com/markdown | sed -e 's/<br>//' > "$2"
+	fi
+
+fi
